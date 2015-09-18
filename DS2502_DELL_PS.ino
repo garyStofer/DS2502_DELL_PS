@@ -5,10 +5,12 @@ Programmer for DS2502 device used in  DELL 90Watt power supply to identify the p
 This sketch needs a DS2502 programmer interface board attached to arduino digital pins 6 and 7, fed with a 12V PS capable of 100ma
 This sketch is running on a Pro-mini running at 16mhz, 5V from the on board 12 to 5V regulator and has been verified under Arduino 1.6.1 IDE, 
 
-Eagle CAD files for programmer board can be downloaded from Github here: 
-PCB boards can be ordered from OSH PCB here: 
+Eagle CAD files for programmer board can be downloaded from Github here: https://github.com/garyStofer/DS2502_DELL_PS
+PCB boards can be ordered from OSH PCB here: https://oshpark.com/shared_projects/l4VC80Px
 
-Sketch is roughly based on the One-Wire example code provided  by Guillermo Lovato <glovato@gmail.com> and uses PJRC OneWire 2.0 library http://www.pjrc.com/teensy/td_libs_OneWire.html
+Sketch requires library  PJRC OneWire 2.0 library http://www.pjrc.com/teensy/td_libs_OneWire.html
+
+Sketch is roughly based on the One-Wire example code provided  by Guillermo Lovato <glovato@gmail.com>
 
  The DS250x is a 512/1024bit add-only PROM(you can add data but cannot change the old one) that's used mainly for device identification purposes
  like serial number, mfgr data, unique identifiers, etc. It uses the Maxim 1-wire bus.
