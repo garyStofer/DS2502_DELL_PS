@@ -1,0 +1,113 @@
+[0, 1310, 23, 107, 931,
+Reset Sequence
+554 low, 		master drives 554 us low  480탎 < tRSTL < 960탎
+25 high,		master goes High-Z - device responds within 15탎 < tPDH < 60탎
+107 low,		Device responds with low 60탎 < tPDL < 240탎
+412 high,		Device goes HighZ
+
+Master writes 0xcc -- SKIP ROM 
+70, 10, 0				Master writes low,
+70, 10, 0				""
+8, 72, 1				Master writes high
+8, 71, 1				""
+71, 10, 0				low
+70, 10, 0				low
+8, 72, 1				high
+9, 72, 1				high
+
+Master Wites 0xF0 -- Read Mem
+71, 10, 0
+71, 21, 0
+70, 9, 0
+71, 10, 0
+10, 70, 1
+8, 72, 1
+9, 70, 1
+8, 73, 1
+
+Master Wites TA1=0x08 -- LSB Address byte
+71, 10, 0
+71, 10, 0
+71, 10, 0
+8, 72, 1
+70, 10, 0
+70, 21, 0
+71, 9, 0
+71, 10, 0
+
+Master writes TA2=00 -- MSB address byte
+71, 10, 0
+71, 10, 0
+71, 10, 0
+71, 10, 0
+70, 10, 0
+70, 10, 0
+71, 10, 0
+70, 11, 0
+-- wait out 32 edges From reset pulse end edge
+Device responds with CRC over 0xf0,0x08,0x00 == 0xfb
+8, 80, 1
+8, 80, 1
+28, 53, 0
+8, 80, 1
+8, 80, 1
+8, 80, 1
+9, 80, 1
+8, 80, 1
+
+				for 090 watt AC adapter :
+
+Device responds with data from first address 0x08 == 0x30 == asii '0'
+8, 80, 1
+8, 80, 1
+28, 54, 0
+28, 53, 0
+28, 54, 0
+28, 54, 0
+28, 54, 0
+28, 54, 0
+
+
+Device responds with next data == 0x39 == ascii '9'
+8, 80, 1
+8, 80, 1
+28, 54, 0
+28, 53, 0
+8, 80, 1
+28, 54, 0
+28, 54, 0
+8, 80, 1
+
+Device responds with next data == 0x30 == ascii '0'
+8, 80, 1
+8, 80, 1
+28, 54, 0
+28, 53, 0
+28, 54, 0
+28, 54, 0
+28, 54, 0
+28, 54, 0 
+
+Read slot :
+
+Master drives a low edge, within 1us the device needs to assert it's output state (low or high Z) and hold for >= 15us, 
+then release to High-Z again within more than 45us. 
+The master then leaves the line up for a recovery period and the initiates the ead of the next bit by driving an high to low edge.
+
+Bsically : device detects high to low transitions and 
+			For a "0" asserts the data line low for at least 15us but less than 60us, then High-Z. 
+			For a "1" leaves the data line in HighZ
+
+
+2502 device content:
+
+RomID: 11 63 4D 8B 00 00 00 14 . Starting from LSB to MSB. 0x11 is the family code about which I can뭪 find any useful information .
+
+Memory dump:
+
+String format: DELL00AC090195046CN09T2157161543835EAL03
+
+Hex format:
+
+44 45 4C 4C 30 30 41 43 30 39 30 31 39 35 30 34 36 43 4E 30 39 54 32 31 35 37 31 36 31 35 34 33 38 33 35 45  41 4C 30 33 E0 A9 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF  FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
+FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF
