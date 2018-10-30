@@ -29,6 +29,9 @@ Progress can be monitored via the Serial terminal in the IDE
 
 #include <OneWire.h>
 
+#define LED_PIN 10
+#define PROG_PIN 7
+#define ONE_WIRE_IO_PIN 6
 #define DS2502DevID 0x09
 // DS250x ROM commands
 #define READ_ROM   0x33
@@ -46,16 +49,16 @@ Progress can be monitored via the Serial terminal in the IDE
 #define ProgLocation 0x00
 
 #define ProgPulseUs 480    // length of time 12V prog pulse needs to be applied for 
-OneWire ds(6);             // OneWire bus on digital pin 6
+OneWire ds(ONE_WIRE_IO_PIN);             // OneWire bus on digital pin 6
 void setup()
 {
      Serial.begin (56700);
     // Pin 13 has an LED connected on most Arduino boards:
-    pinMode(13, OUTPUT); 
+    pinMode(LED_PIN, OUTPUT); 
      
     // Pin 7 is the PRGM/ output, sending a low enables the programming voltage +12V onto the wire
-    digitalWrite(7, HIGH);   // set Non Programming mode
-    pinMode(7,OUTPUT);
+    digitalWrite(PROG_PIN, HIGH);   // set Non Programming mode
+    pinMode(PROG_PIN,OUTPUT);
 }
 
 // This is the magic string Dell laptops need to see from the device in order to not go into limp home mode 
@@ -78,9 +81,9 @@ lockup( void)
 void 
 ProgPulse( void)
 {    
-  digitalWrite(7, LOW);  
+  digitalWrite(PROG_PIN, LOW);  
   delayMicroseconds(ProgPulseUs);
-  digitalWrite(7, HIGH); 
+  digitalWrite(PROG_PIN, HIGH); 
   delayMicroseconds(100); 
 }
 
@@ -95,11 +98,11 @@ void loop()
     byte crc;                      // Variable to store the command CRC
     byte crc_calc;
 
-    digitalWrite(13, LOW);   // set the LED off
+    digitalWrite(LED_PIN, LOW);   // set the LED off
     
     if (ds.reset())            // We only try to read the data if there's a device present
     {
-        digitalWrite(13, HIGH);   // LED on
+        digitalWrite(LED_PIN, HIGH);   // LED on
         Serial.println("device present");
         
         // Read and display ROM data of device attached and check CRC 
