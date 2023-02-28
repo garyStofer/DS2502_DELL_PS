@@ -29,6 +29,8 @@ Progress can be monitored via the Serial terminal in the IDE
 
 #include <OneWire.h>
 
+#define DOPROGRAM
+
 #define LED_PIN 10
 #define PROG_PIN 7
 #define ONE_WIRE_IO_PIN 6
@@ -52,7 +54,7 @@ Progress can be monitored via the Serial terminal in the IDE
 OneWire ds(ONE_WIRE_IO_PIN);             // OneWire bus on digital pin 6
 void setup()
 {
-     Serial.begin (56700);
+     Serial.begin (115200);
     // Pin 13 has an LED connected on most Arduino boards:
     pinMode(LED_PIN, OUTPUT); 
      
@@ -123,16 +125,19 @@ void loop()
           Serial.println("ROM CRC matches ");
           if (data[0] != DS2502DevID)
           {
-             Serial.println("Device ID does not match DS2502"); 
-             lockup();
+             Serial.print( data[0],HEX);
+             Serial.println(" -- Device ID does not match DS2502"); 
+   //          lockup();
           }
+          else
+            Serial.println("Device ID  DS2502 found"); 
         }
         else
         {
              Serial.println("ROM CRC failed"); 
              lockup();
         }
-        
+#ifdef DOPROGRAM        
         Serial.println("PROG Memory");        
         ds.reset(); 
         ds.skip();  
@@ -159,7 +164,9 @@ void loop()
         }
           
         data[0] = ds.read();
-        Serial.print("programmed data read back ");
+        Serial.print("programmed data:  ");
+        Serial.print(progStr[0],HEX); 
+        Serial.print(" read back: ");
         Serial.println(data[0],HEX);        
           
        // loop for subsequent bytes -- CRC calculation is based on incremented LSB of address and data only now
@@ -189,12 +196,14 @@ void loop()
             ProgPulse();
         }
         
-        data[0] = ds.read();
-        Serial.print("programmed data read back ");
-        Serial.println(data[0],HEX);       // printout in ASCII
+          data[0] = ds.read();
+          Serial.print("programmed data:  ");
+          Serial.print(progStr[i],HEX); 
+          Serial.print(" read back: ");
+          Serial.println(data[0],HEX);   
              
        }
-          
+#endif          
                   
    
         Serial.println("Reading Memory");        
@@ -209,7 +218,7 @@ void loop()
 
         crc = ds.read();             // DS250x generates a CRC for the command we sent, we assign a read slot and store it's value
         crc_calc = OneWire::crc8(leemem, 3);  // We calculate the CRC of the commands we sent using the library function and store it
-
+ 
         if ( crc_calc != crc)        // Then we compare it to the value the ds250x calculated, if it fails, we print debug messages and abort
         {
             Serial.println("Invalid command CRC!");
