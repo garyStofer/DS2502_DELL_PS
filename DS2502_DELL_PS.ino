@@ -65,7 +65,7 @@ void setup()
 
 // This is the magic string Dell laptops need to see from the device in order to not go into limp home mode 
 // The interesting bit is the wattage 090 followed by the voltage 1950 and the amperage 4.6 
-char *progStr ="DELL00AC090195046CN09T";
+const char *progStr ="DELL00AC090195046CN09T";
 
 // This function parks the MCU in an infinite while loop 
 void 
